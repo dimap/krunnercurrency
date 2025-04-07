@@ -10,7 +10,7 @@ CurrencyAPI::CurrencyAPI(Plasma::AbstractRunner *runner, Plasma::RunnerContext &
         : m_runner(runner), m_context(context), m_amount(amount), m_curr_1(curr_1), m_curr_1_des(curr_1_desc), m_curr_2(curr_2), m_curr_2_desc(curr_2_desc) {
     m_manager = new QNetworkAccessManager(this);
 
-    QUrl url = QUrl(QStringLiteral("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/%1/%2.json").arg(curr_1).arg(curr_2));      
+    QUrl url = QUrl(QStringLiteral("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/%1.json").arg(curr_1));      
     QNetworkRequest request(url);
     m_manager->get(request);
     connect(m_manager, &QNetworkAccessManager::finished, this, &CurrencyAPI::parseResult);
@@ -23,7 +23,7 @@ void CurrencyAPI::parseResult(QNetworkReply *reply) {
         if (!jsonDoc.isNull() && jsonDoc.isObject()) {
             QJsonObject jsonObj = jsonDoc.object();
             
-            double rate = jsonObj[m_curr_2].toDouble();
+            double rate = jsonObj[m_curr_1][m_curr_2].toDouble();
                             
             QString data = QStringLiteral("%1 %2").arg(m_amount * rate).arg(m_curr_2_desc);
 
