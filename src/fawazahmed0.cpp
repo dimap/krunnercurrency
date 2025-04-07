@@ -22,9 +22,11 @@ void CurrencyAPI::parseResult(QNetworkReply *reply) {
         QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
         if (!jsonDoc.isNull() && jsonDoc.isObject()) {
             QJsonObject jsonObj = jsonDoc.object();
-            
-            double rate = jsonObj[m_curr_1][m_curr_2].toDouble();
-                            
+
+            QJsonValue jsonVal = jsonObj.value(m_curr_1);
+            QJsonObject rateObj = jsonVal.toObject();
+            double rate = rateObj[m_curr_2].toDouble();
+
             QString data = QStringLiteral("%1 %2").arg(m_amount * rate).arg(m_curr_2_desc);
 
             Plasma::QueryMatch match(m_runner);
